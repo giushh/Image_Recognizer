@@ -1,0 +1,8 @@
+- scarica nella stessa cartella
+app.py
+cifar10_improved_model.keras
+
+- apri il cmd nella stessa cartella
+
+- manda il comando 
+python3.12 -m streamlit run app.py
