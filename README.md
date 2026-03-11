@@ -1,9 +1,10 @@
 # Progetto Finale Gruppo GGICMADFMN Corso PyML
-Classificazione Immagini con CNN (CIFAR-10)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-DeepLearning-orange)
 ![Dataset](https://img.shields.io/badge/Dataset-CIFAR10-green)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+Classificazione Immagini con CNN (CIFAR-10)
 
 Collaboratori: 
 - [Gabriele Giuliani](https://github.com/giulianigabbo95/) (Sviluppo Documentazione)
@@ -13,66 +14,138 @@ Collaboratori:
 
 ---
 
-## Regole
+## Struttura
+```Powershell
+Image_Recognizer_CNN/
+│
+├─ .git/                                # Cartella interna di Git (versionamento)
+├─ .vscode/                             # Configurazioni dell'editor VS Code
+│   └─ settings.json                    # Impostazioni locali del progetto
+│
+├─ CODE/                                # Codice principale per training ed esperimenti
+│   ├─ EXPORT/                          # Output esportati da notebook o pipeline
+│   │   ├─ bot/                         # File generati per integrazione con bot/app
+│   │   │   ├─ backups                  # Copie per esprimento sul bot
+│   │   │   │	├─ ds_copy1.ipynb       # Copia 1 del bot
+│   │   │   │	└─ ds_copy2.ipynb       # Copia 2 del bot
+│   │   │   └─ ds.ipynb                 # Bot Discord
+│   │   └─ metadata.json                # Metadati del modello (input/output, classi, preprocessing)
+│   └─ MODELS/                          # Notebook di sviluppo dei modelli CNN
+│       ├─ CNN_advanced.ipynb           # Versione avanzata del modello
+│       └─ CNN_base.ipynb               # Modello CNN base (baseline)
+│
+├─ DATASET/                             # Script e riferimenti al dataset
+│   └─ link_dataset.py                  # Script per download o collegamento dataset
+│
+├─ FRONTEND/                            # Interfaccia utente dell'applicazione
+│   └─ app.py                           # Applicazione (probabilmente Streamlit)
+│
+├─ RESULT/                              # Output finale del progetto
+│   ├─ app.py                           # Versione finale dell'app
+│   ├─ cifar10_improved_model.keras     # Modello CNN addestrato
+│   └─ guida_veloce.md                  # Guida rapida all'utilizzo
+│
+├─ UTILITIES/                           # Risorse e strumenti di supporto
+│   ├─ img_samples.png                  # Esempi di immagini del dataset
+│   └─ modello_cifar10.h5               # Modello CNN salvato (baseline o versione precedente)
+│
+├─ env_progetto/                        # Ambiente virtuale locale (da ignorare)
+│   └─ ...                              # File di configurazione (da ignorare)
+│
+├─  requirements.txt                    # Dipendenze Python del progetto
+├─ .gitattributes                       # Configurazioni Git per gestione file
+├─ .gitignore                           # File/cartelle ignorati da Git
+└─ README.md                            # Documentazione principale del progetto (Questo file)
+```
 
-### Regole di Setup
-Per eseguire correttamente il progetto si consiglia di:
-- Clonare il repository con git clone https://github.com/giushh/Progetto_Finale_Gruppo3.git o client Desktop con GUI
+---
+
+## Regole
+Al fine di usufrire di questo progetto bisogna seguire le Regole di Utilizzo, ma è possibile analizzare o modificare il training facendo riferimento alle Regole di Setup.
+
+### Regole di Setup (o Training)
+L'allenamento corretto del modello si ottiene usando `CODE\MODELS\CNN_Base.ipynb`, e si consiglia di:
+- Clonare il repository con `git clone https://github.com/giushh/Progetto_Finale_Gruppo3.git` o client Desktop con GUI
 - Creare un ambiente virtuale (facoltativo):
     - su Linux / macOS con:
         ```bash
             python3 -m venv venv
             source venv/bin/activate
         ```
-    - su Windows con
+    - su Windows con:
         ```cmd
             python -m venv venv
             venv\Scripts\activate
         ``` 
-- Posizionarsi nella cartella mediante GUI o con
+- Posizionarsi nella cartella mediante GUI o con:
     ```Powershell
-        cd Progetto_Finale_Gruppo3
+        cd Progetto_Finale_Gruppo3\
     ```
 - Utilizzare [Jupyter Notebook](https://jupyter.org/) oppure eseguire il notebook su piattaforme cloud come [Google Colab](https://colab.research.google.com/) caricando su Google Drive i file appena scaricati.
 - Assicurarsi che l'ambiente supporti [**Python 3.12**](https://www.python.org/downloads/release/python-3120/).
-- Abilitare l'utilizzo della GPU, se disponibile, per ridurre significativamente i tempi di training della rete neurale.
-- Installare le librerie richieste indicate nel file `requirements.txt` (se presente) con
+- Abilitare l'utilizzo della GPU (seguendo le istruzioni nel file `CODE\MODELS\CNN_advanced.ipynb` in base al modello della propria scheda video), se disponibile, per ridurre significativamente i tempi di training della rete neurale (facoltativo).
+- Installare le librerie richieste indicate nel file `requirements.txt` con:
     ```python
         pip install -r requirements.txt.
     ```
-- Registrarsi a [Kaggle](https://www.kaggle.com/)
-- Creare un New API Token
-- Scaricare il file `kaggle.json`
-- Configurare la API di Kaggle
-    - su Linux / macOS con:
+- Visualizzare gli elementi del dataset (facoltativo):
+	- Registrarsi a [Kaggle](https://www.kaggle.com/)
+	- Accedere alla competizione tramite il [link](https://www.kaggle.com/competitions/cifar-10/overview) in `DATASET/link_dataset.txt`, e accettare per ottenere autorizzazione a scaricare e esplorare il dataset, il quale viene comunque importato tramite `keras`
+	- Creare un New API Token
+	- Scaricare il file `kaggle.json`
+	- Configurare la API di Kaggle
+		- su Linux / macOS con:
+		```bash
+			mkdir -p ~/.kaggle
+			mv kaggle.json ~/.kaggle/
+			chmod 600 ~/.kaggle/kaggle.json
+		```
+		- su Windows con:
+		```cmd
+			C:\Users\<username>\.kaggle\ 
+		```
+	- Scaricare il dataset eseguendo
+		```bash
+			kaggle competitions download -c cifar-10 
+		```
+		ed estraendo i file nella cartella `/data`
+	- Verificare che tutto sia configurato correttamente con `python train.py`
+- Eseguire in ordine i singoli blocchi in Python spiegati tramite gli appositi Markdown
+
+In alternativa è possibile utilizzare `CODE\MODELS\CNN_advanced.ipynb`, ovvero un modello più potente che potenzialmente avrà un'accuracy migliore date le tecniche avanzate con il quale è addestrato.
+Questo modello sfrutta Optuna, e richiede maggiori risorse hardware e l'installazione di altre due librerie:
+- tensorflow
+- scikit-learn
+
+Nota: il progetto è stato sviluppato e testato utilizzando in tutti i casi il dataset **CIFAR-10**.
+
+### Regole di Utilizzo 
+Sono stati implementati tre metodi, con diversi gradi di interfaccia grafica e visibilità del codice.
+
+#### Web App (con apertura del codice)
+- Controllare che `app.py` e `cifar10_improved_model.keras` siano nella stessa cartella
+- Assicurarsi che l'ambiente supporti [**Python 3.12**](https://www.python.org/downloads/release/python-3120/) e tutte le librerie importate nel file `app.py` siano installate
+- Posizionarsi nella cartella mediante GUI o con:
     ```bash
-        mkdir -p ~/.kaggle
-        mv kaggle.json ~/.kaggle/
-        chmod 600 ~/.kaggle/kaggle.json
+        cd RESULT\
     ```
-    - su Windows con:
-    ```cmd
-        C:\Users\<username>\.kaggle\ 
-    ```
-- Scaricare il dataset eseguendo
-    ``` bash
-        kaggle competitions download -c cifar-10 
-    ```
-    ed estraendo i file nella cartella `/data`
-- Verificare che tutto sia configurato correttamente con python train.py
-
-Nota: il progetto è stato sviluppato e testato utilizzando il dataset **CIFAR-10**.
-
-### Regole di Esecuzione (con lettura del codice)
-- Eseguire il file frontend
-- Caricare un'immagine a piacere
+- Eseguire il comando:
+	```bash
+        python3.12 -m streamlit run app.py
+	```
+- Seguire le istruzioni a schermo
 - Attendere l'esito
 
-### Regole di Esecuzione (senza lettura del codice)
-- Aggiungere il bot [image recognizer bot](https://discord.com/oauth2/authorize?client_id=1480557912794337330&permissions=8&integration_type=0&scope=bot) al proprio server Discord
+#### Gradio (con apertura del codice)
+- Eseguire il file `CNN_base.ipynb` mediante il pulsante `Run All` nell'editor di codice
+- Seguire le istruzioni a schermo caricando un'immagine
+- Attendere l'esito
+
+#### Discord (senza apertura del codice)
+- Aggiungere il bot [MaGMI Image Recognizer](https://discord.com/oauth2/authorize?client_id=1480557912794337330&permissions=8&integration_type=0&scope=bot) al proprio server Discord
 - Avviare il bot
-- Caricare un'immagine a piacere scrivendo come descrizione il comando:
-    ``` Discord
+- Caricare un'immagine scrivendo come descrizione il comando:
+    ```Discord
         !classifica
     ```
 - Attendere l'esito
@@ -81,7 +154,7 @@ Nota: il progetto è stato sviluppato e testato utilizzando il dataset **CIFAR-1
 
 ## Obiettivo 
 In questo progetto viene affrontato un problema di classificazione di immagini utilizzando il dataset CIFAR-10.
-L'obiettivo è classificare ogni immagine del dataset in una delle 10 classi disponibili.
+L'obiettivo è classificare ogni immagine del dataset in una delle dieci classi disponibili.
 
 Le classi includono sia mezzi di trasporto sia animali, quindi il modello deve imparare a riconoscere:
 - forme
@@ -89,23 +162,22 @@ Le classi includono sia mezzi di trasporto sia animali, quindi il modello deve i
 - pattern visivi
 - caratteristiche distintive degli oggetti
 
-![Immagini di Esempio](https://github.com/giushh/Progetto_Finale_Gruppo3/blob/img_samples.png)
+![Immagini di Esempio](https://github.com/giushh/Progetto_Finale_Gruppo3/blob/main/img_samples.png)
 
 Oltre a costruire una CNN funzionante, il progetto mira anche a ottimizzarne le prestazioni.  
-Vengono quindi utilizzate tecniche come:
+Vengono quindi utilizzate tecniche con l'obiettivo di migliorare la capacità di generalizzazione del modello su immagini mai viste prima come:
 - normalizzazione dei pixel
 - dropout
 - batch normalization
 - data augmentation
-con l'obiettivo di migliorare la capacità di generalizzazione del modello su immagini mai viste prima.
 
 ---
 
 ## Dataset: CIFAR-10
 Il dataset CIFAR-10 è uno dei più utilizzati per iniziare a lavorare con la classificazione di immagini tramite reti neurali.  
 Il nome indica:
-- CIFAR → nome del dataset
-- 10 → numero di classi da riconoscere
+- CIFAR: nome del dataset
+- 10: numero di classi da riconoscere
 
 ### Dimensioni del dataset
 Il dataset contiene:
