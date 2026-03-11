@@ -69,7 +69,7 @@ Nota: il progetto è stato sviluppato e testato utilizzando il dataset **CIFAR-1
 - Attendere l'esito
 
 ### Regole di Esecuzione (senza lettura del codice)
-- Aggiungere il bot [GGICMADFMN](https://discord.com/oauth2/authorize?client_id=1480557912794337330&permissions=8&integration_type=0&scope=bot) al proprio server Discord
+- Aggiungere il bot [image recognizer bot](https://discord.com/oauth2/authorize?client_id=1480557912794337330&permissions=8&integration_type=0&scope=bot) al proprio server Discord
 - Avviare il bot
 - Caricare un'immagine a piacere scrivendo come descrizione il comando:
     ``` Discord
