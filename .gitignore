@@ -183,10 +183,9 @@ cython_debug/
 # Impostazioni locali di VS Code
 .vscode/
 
-#env del venv
+# env del venv
 env_progetto
-
 .env
 
-#apple
-.DS_store
+# File macOS 
+.DS_Store
