@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # ## Implementazione di un Bot Discord per la Classificazione CIFAR-10
 # In questa sezione integriamo il modello addestrato con un Bot Discord. 
 # Il bot riceverà un'immagine, la processerà e restituirà la classe predetta.
-
-# In[ ]:
 
 
 # Installazione delle librerie necessarie
@@ -20,18 +15,15 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv 
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
+import keras
+from PIL import Image
 
 # Patch necessaria per far girare il loop di Discord dentro Jupyter
 nest_asyncio.apply()  #Ho incluso nest_asyncio perché i file Jupyter hanno spesso conflitti con i loop di Discord.
-
-
-# In[ ]:
-
-
-import os
-import discord
-from discord.ext import commands
-from dotenv import load_dotenv 
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
@@ -43,26 +35,21 @@ if not TOKEN:
 
 
 # ##### 1. Caricamento del Modello e Definizione Classi
-# Carichiamo il file `.h5` generato durante la fase di training e definiamo le 10 etichette del dataset CIFAR-10.
-
-# In[ ]:
-
-
-import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
+# Carichiamo il file `keras` generato durante la fase di training e definiamo le 10 etichette del dataset CIFAR-10.
 
 # Percorso relativo dalla cartella bot/ a RESULT/
-MODEL_PATH = os.path.join('..', '..', '..', 'RESULT', 'cifar10_improved_model.keras')
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+MODEL_PATH = os.path.join(PROJECT_ROOT, "RESULT", "cifar10_improved_model.keras")
 
 
 try:
     # Aggiungiamo compile=False per ignorare l'ottimizzatore PyTorch incompatibile
-    model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-    print("✅ Modello caricato correttamente (modalità inferenza)!")
+    model = keras.models.load_model(MODEL_PATH, compile=False)
+    if model:
+        print("✅ Modello caricato correttamente (modalità inferenza)!")
 
     # Visualizziamo la struttura per essere sicuri che sia integro
-    model.summary()
+        model.summary()
 
 except Exception as e:
     print(f"❌ Errore nel caricamento: {e}")
@@ -79,8 +66,6 @@ class_names = ['aereo', 'automobile', 'uccello', 'gatto', 'cervo',
 # 2. Ridimensionarla a 32x32 pixel.
 # 3. Normalizzare i valori dei pixel tra 0 e 1.
 
-# In[ ]:
-
 
 def prepare_image(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
@@ -95,22 +80,11 @@ def prepare_image(image_bytes):
 # Definiamo il prefisso del comando (`!`) e la logica per gestire l'allegato. 
 # Il bot scaricherà l'immagine, userà il modello per la predizione e risponderà all'utente.
 
-# In[ ]:
-
 
 # Configurazione permessi (Intents)
 intents = discord.Intents.default()
 intents.message_content = True 
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-
-# In[ ]:
-
-
-import io
-import numpy as np
-import discord
-from PIL import Image
 
 @bot.command()
 async def classifica(ctx):
@@ -193,9 +167,6 @@ async def classifica(ctx):
 
 # ### Gestione Errori
 
-# In[ ]:
-
-
 # 1. Configurazione Stato Personalizzato
 @bot.event
 async def on_ready():
@@ -218,8 +189,6 @@ async def on_command_error(ctx, error):
 # ### Comando Informativo
 # Aggiungiamo un comando per spiegare agli utenti quali sono le 10 categorie che il modello può riconoscere (dataset CIFAR-10) e come utilizzare il bot.
 
-# In[ ]:
-
 
 @bot.command()
 async def info(ctx):
@@ -241,8 +210,6 @@ async def info(ctx):
 
 # # Esecuzione
 # Inserisci il tuo Token e avvia la cella. Il bot rimarrà attivo finché la cella è in esecuzione.
-
-# In[ ]:
 
 
 print("⌛ Tentativo di connessione a Discord in corso...")
