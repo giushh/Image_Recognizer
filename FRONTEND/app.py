@@ -8,7 +8,10 @@ import plotly.express as px
 from streamlit.components.v1 import html
 from pathlib import Path
 from CODE.utils import ColorJitter
-    
+import os
+from dotenv import load_dotenv
+
+
 st.set_page_config(
     page_title="Image Recognizer",
     page_icon="🖼️",
@@ -16,7 +19,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# Carica le variabili d'ambiente dal file .env
+load_dotenv()
+
+PROJECT_ROOT = os.getenv("PYTHONPATH")
 MODEL_PATH = os.path.join(PROJECT_ROOT, "RESULT/cifar10_improved_model_V2.keras")
 
 CLASS_NAMES = [
